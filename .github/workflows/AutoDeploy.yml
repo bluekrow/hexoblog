@@ -1,0 +1,16 @@
+name: Auto Deploy
+
+on: [push]
+
+jobs:
+  build:
+    env:
+      gh-token: ${{ github.GITHUB_TOKEN }}
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+    - run: npm install
+    - run: npm test
