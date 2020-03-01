@@ -18,6 +18,10 @@ jobs:
       run: npm install -g hexo-cli
     - name: Static files genetation
       run: hexo generate
+    - name: Set git identification
+      run: |
+        git config --global user.name "bluekrow"
+        git config --global user.email "ndioses@gmail.com"     
     - name: Website deployment
       run: hexo deploy
       
