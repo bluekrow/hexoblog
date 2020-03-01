@@ -102,4 +102,5 @@ deploy:
   repo: https://github.com/bluekrow/hexoblog
   branch: gh-pages
   token: $gh-token
-  
+  name: BlueKrow
+  email: ndioses@gmail.com
