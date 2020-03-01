@@ -16,6 +16,6 @@ jobs:
       run: npm install
     - name: Hexo CLI installation
       run: npm install -g hexo-cli
-    - name: Hexo check
-      run: hexo -v
+    - name: Static files genetation
+      run: hexo generate
 
