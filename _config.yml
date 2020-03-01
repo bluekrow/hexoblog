@@ -101,4 +101,5 @@ deploy:
   type: git
   repo: https://github.com/bluekrow/hexoblog
   branch: gh-pages
+  token: $gh-token
   
