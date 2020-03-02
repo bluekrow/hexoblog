@@ -22,7 +22,7 @@ jobs:
         echo "GH_PAGES_EXISTS: $GH_PAGES_EXISTS"
         if [ "$GH_PAGES_EXISTS" == 1 ]; then
           echo "Cloning existent $REPO_BRANCH branch"
-          echo ${pwd}
+          pwd
         else
           echo "Initializing and pushing to a new $REPO_BRANCH branch"
         fi
