@@ -21,7 +21,7 @@ jobs:
         GH_PAGES_EXISTS=$(git ls-remote --heads https://github.com/${REPO_NAME}.git ${REPO_BRANCH} | wc -l)
         echo $GH_PAGES_EXISTS
         if [ "$GH_PAGES_EXISTS" == 1 ]; then
-          echo clone
+          echo "Cloning existent $REPO_BRANCH branch"
         else
-          echo init
+          echo "Initializing and pushing to a new $REPO_BRANCH branch"
         fi
