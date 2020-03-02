@@ -15,32 +15,26 @@ jobs:
       REPO_LOCAL_DIR: ".deploy"
     runs-on: ubuntu-18.04
     steps:
-    - uses: actions/checkout@v2
-    - name: Dump GitHub context
-      env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-      run: echo "$GITHUB_CONTEXT"
-    - name: Dump job context
-      env:
-        JOB_CONTEXT: ${{ toJson(job) }}
-      run: echo "$JOB_CONTEXT"
-    - name: Create or clone static content branch
+    - name: Clone source repository
+      uses: actions/checkout@v2
+    - name: Push changes to destination branch
       run: |
         GH_PAGES_EXISTS=$(git ls-remote --heads ${REPO_URL} ${REPO_BRANCH} | wc -l)
         echo "GH_PAGES_EXISTS: $GH_PAGES_EXISTS"
         if [ "$GH_PAGES_EXISTS" == 1 ]; then
-          ls -lha
           echo "Cloning existent $REPO_BRANCH branch"
           git clone --single-branch --branch ${REPO_BRANCH} ${REPO_URL} ${REPO_LOCAL_DIR}
           cd ${REPO_LOCAL_DIR}
           git config user.email ${REPO_OWNER_EMAIL}
           git config user.name ${REPO_OWNER_NAME}
           git remote set-url origin https://${REPO_OWNER_NAME}:${REPO_TOKEN}@github.com/${REPO_NAME}.git
-          echo "one line inserted again" > README.md
-          git add .
-          git commit -m "${REPO_COMMIT_MESSAGE}"
-          git push
         else
           echo "Initializing and pushing to a new $REPO_BRANCH branch"
           echo "NOT IMPLEMENTED YET"
         fi
+    - name: Push changes to destination branch
+      run: |
+        pwd
+        git add .
+        git commit -m "${REPO_COMMIT_MESSAGE}"
+        git push
