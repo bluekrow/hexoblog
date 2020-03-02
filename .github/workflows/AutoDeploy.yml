@@ -11,20 +11,11 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
-      with:
-        node-version: '10.x'
     - name: Environment variables used
       run: |
         echo $gh-token
         echo $repo-name
-    - name: Project Node requirements installation
-      run: npm install
-    - name: Hexo cli installation
-      run: npm install -g hexo-cli
-    - name: Static files genetation
-      run: hexo generate
     - name: Create or clone static content branch
       run: |
-        GH_PAGES_EXISTS=$(git ls-remote --heads git@github.com:${repo-name}.git ${repo-branch} | wc -l)
+        GH_PAGES_EXISTS=$(git ls-remote --heads https://github.com/${repo-name}.git ${repo-branch} | wc -l)
         echo $GH_PAGES_EXISTS
