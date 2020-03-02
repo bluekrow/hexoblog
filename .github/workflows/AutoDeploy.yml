@@ -36,10 +36,12 @@ jobs:
           mkdir ${REPO_LOCAL_DIR}
           cd ${REPO_LOCAL_DIR}
           git init
+          git remote add origin https://${REPO_OWNER_NAME}:${REPO_TOKEN}@github.com/${REPO_NAME}.git
           git config user.email ${REPO_OWNER_EMAIL}
           git config user.name ${REPO_OWNER_NAME}
           git checkout -b ${REPO_BRANCH}
+          echo test >> README.md
           git add .
-          git remote add origin https://${REPO_OWNER_NAME}:${REPO_TOKEN}@github.com/${REPO_NAME}.git
+          git commit -m "${REPO_COMMIT_MESSAGE}"
           git push -u origin ${REPO_BRANCH}
         fi
