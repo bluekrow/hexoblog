@@ -43,8 +43,6 @@ jobs:
           git remote set-url origin https://${REPO_OWNER_NAME}:${REPO_TOKEN}@github.com/${REPO_NAME}.git
           echo "one line inserted" > README.md
           git add .
-          git commit -m 'action: autodeploy'
-          git push
         else
           echo "Initializing and pushing to a new $REPO_BRANCH branch"
         fi
