@@ -17,7 +17,7 @@ jobs:
     steps:
     - name: Clone source repository
       uses: actions/checkout@v2
-    - name: Push changes to destination branch
+    - name: Configure destination branch
       run: |
         GH_PAGES_EXISTS=$(git ls-remote --heads ${REPO_URL} ${REPO_BRANCH} | wc -l)
         echo "GH_PAGES_EXISTS: $GH_PAGES_EXISTS"
@@ -34,7 +34,7 @@ jobs:
         fi
     - name: Push changes to destination branch
       run: |
-        pwd
+        cd ${REPO_LOCAL_DIR}
         git add .
         git commit -m "${REPO_COMMIT_MESSAGE}"
         git push
