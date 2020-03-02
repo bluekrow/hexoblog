@@ -9,6 +9,7 @@ jobs:
       REPO_NAME: ${{ github.REPOSITORY }}
       REPO_URL: ${{ github.EVENT.REPOSITORY.CLONE_URL }}
       REPO_BRANCH: "gh-pages"
+      REPO_LOCAL_DIR: ".deploy"
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
@@ -22,17 +23,18 @@ jobs:
       run: echo "$JOB_CONTEXT"
     - name: Environment variables used
       run: |
-        echo $REPO_TOKEN
-        echo $REPO_NAME
-        echo $REPO_BRANCH
-        echo $REPO_URL
+        echo "REPO_TOKEN: $REPO_TOKEN"
+        echo "REPO_NAME: $REPO_NAME"
+        echo "REPO_BRANCH: $REPO_BRANCH"
+        echo "REPO_URL: $REPO_URL"
+        echo "REPO_LOCAL_DIR: $REPO_LOCAL_DIR"
     - name: Create or clone static content branch
       run: |
-        GH_PAGES_EXISTS=$(git ls-remote --heads https://github.com/${REPO_NAME}.git ${REPO_BRANCH} | wc -l)
+        GH_PAGES_EXISTS=$(git ls-remote --heads ${REPO_URL} ${REPO_BRANCH} | wc -l)
         echo "GH_PAGES_EXISTS: $GH_PAGES_EXISTS"
         if [ "$GH_PAGES_EXISTS" == 1 ]; then
           echo "Cloning existent $REPO_BRANCH branch"
-          git clone --single-branch --branch ${REPO_BRANCH} ${REPO_NAME}
+          git clone --single-branch --branch ${REPO_BRANCH} ${REPO_URL} ${$REPO_LOCAL_DIR}
           pwd
           ls 
         else
