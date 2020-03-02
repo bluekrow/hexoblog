@@ -31,6 +31,7 @@ jobs:
         else
           echo "Initializing and pushing to a new $REPO_BRANCH branch"
           mkdir ${REPO_LOCAL_DIR}
+          cd ${REPO_LOCAL_DIR}
           git init
           git config user.email ${REPO_OWNER_EMAIL}
           git config user.name ${REPO_OWNER_NAME}
