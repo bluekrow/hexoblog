@@ -42,7 +42,9 @@ jobs:
           git config user.name ${REPO_OWNER_NAME}
           git remote set-url origin https://${REPO_OWNER_NAME}:${REPO_TOKEN}@github.com/${REPO_NAME}.git
           echo "one line inserted" > README.md
+          git status
           git add .
+          git status
         else
           echo "Initializing and pushing to a new $REPO_BRANCH branch"
         fi
