@@ -34,7 +34,7 @@ jobs:
         echo "GH_PAGES_EXISTS: $GH_PAGES_EXISTS"
         if [ "$GH_PAGES_EXISTS" == 1 ]; then
           echo "Cloning existent $REPO_BRANCH branch"
-          git clone --single-branch --branch ${REPO_BRANCH} ${REPO_URL} ${$REPO_LOCAL_DIR}
+          git clone --single-branch --branch ${REPO_BRANCH} ${REPO_URL} ${REPO_LOCAL_DIR}
           pwd
           ls 
         else
