@@ -8,7 +8,8 @@ jobs:
       REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       REPO_NAME: ${{ github.REPOSITORY }}
       REPO_URL: ${{ github.EVENT.REPOSITORY.CLONE_URL }}
-      REPO_OWNER: ${{ github.EVENT.REPOSITORY.OWNER.NAME }}
+      REPO_OWNER_NAME: ${{ github.EVENT.REPOSITORY.OWNER.NAME }}
+      REPO_OWNER_EMAIL: ${{ github.EVENT.REPOSITORY.OWNER.NAME }}
       REPO_BRANCH: "gh-pages"
       REPO_LOCAL_DIR: ".deploy"
     runs-on: ubuntu-18.04
@@ -38,8 +39,8 @@ jobs:
           git clone --single-branch --branch ${REPO_BRANCH} ${REPO_URL} ${REPO_LOCAL_DIR}
           cd ${REPO_LOCAL_DIR}
           git config user.email "ndioses@gmail.com"
-          git config user.name ${REPO_OWNER}
-          git remote set-url origin https://${REPO_OWNER}:${REPO_TOKEN}@github.com/${REPO_NAME}.git
+          git config user.name ${REPO_OWNER_NAME}
+          git remote set-url origin https://${REPO_OWNER_NAME}:${REPO_TOKEN}@github.com/${REPO_NAME}.git
           echo "one line inserted" > README.md
           git add .
           git commit -m 'action: autodeploy'
