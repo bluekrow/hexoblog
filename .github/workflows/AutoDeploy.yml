@@ -39,7 +39,7 @@ jobs:
           cd ${REPO_LOCAL_DIR}
           git remote -v
           git remote set-url origin https://${REPO_OWNER}:${REPO_TOKEN}@github.com/${REPO_NAME}.git
-          git remote -v
+          cat .git/config
         else
           echo "Initializing and pushing to a new $REPO_BRANCH branch"
         fi
