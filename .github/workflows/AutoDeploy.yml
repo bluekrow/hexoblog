@@ -26,5 +26,5 @@ jobs:
       run: hexo generate
     - name: Create or clone static content branch
       run: |
-        GH_PAGES_EXISTS=$(git ls-remote --heads git@github.com:$repo-name.git $repo-branch | wc -l)
+        GH_PAGES_EXISTS=$(git ls-remote --heads git@github.com:"$repo-name".git "$repo-branch" | wc -l)
         echo $GH_PAGES_EXISTS
