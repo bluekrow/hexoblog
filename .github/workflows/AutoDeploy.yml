@@ -7,6 +7,7 @@ jobs:
     env:
       gh-token: ${{ secrets.GITHUB_TOKEN }}
       repo-name: ${{ github.REPOSITORY }}
+      repo-branch: "gh-pages"
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
@@ -25,5 +26,5 @@ jobs:
       run: hexo generate
     - name: Create or clone static content branch
       run: |
-        GH_PAGES_EXISTS=$(git ls-remote --heads git@github.com:user/$repo-name.git branch-name | wc -l)
+        GH_PAGES_EXISTS=$(git ls-remote --heads git@github.com:$repo-name.git $repo-branch | wc -l)
         echo $GH_PAGES_EXISTS
