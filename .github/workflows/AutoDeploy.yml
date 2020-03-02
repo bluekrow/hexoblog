@@ -43,6 +43,7 @@ jobs:
           git config user.email ${REPO_OWNER_EMAIL}
           git config user.name ${REPO_OWNER_NAME}
           git remote set-url origin https://${REPO_OWNER_NAME}:${REPO_TOKEN}@github.com/${REPO_NAME}.git
+          ls -lha
           echo "one line inserted" > README.md
           ls -lha
           git status
