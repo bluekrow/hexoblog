@@ -17,9 +17,8 @@ jobs:
         echo $REPO_NAME
         echo $REPO_BRANCH
     - name: Create or clone static content branch
-      env:
-        GH_PAGES_EXISTS: $ {{ $(git ls-remote --heads https://github.com/${REPO_NAME}.git ${REPO_BRANCH} | wc -l) }}
       run: |
+        GH_PAGES_EXISTS=$(git ls-remote --heads https://github.com/${REPO_NAME}.git ${REPO_BRANCH} | wc -l)
         echo $GH_PAGES_EXISTS
         if [ "$GH_PAGES_EXISTS" == 1 ]; then
           echo clone
