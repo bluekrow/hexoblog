@@ -6,24 +6,24 @@ jobs:
   build:
     env:
       gh-token: ${{ secrets.GITHUB_TOKEN }}
+      repo-name: ${{ github.REPOSITORY }}
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
       with:
         node-version: '10.x'
+    - name: Environment variables used
+      run: |
+        echo $gh-token
+        echo $repo-name
     - name: Project Node requirements installation
       run: npm install
-    - name: Hexo CLI installation
+    - name: Hexo cli installation
       run: npm install -g hexo-cli
     - name: Static files genetation
       run: hexo generate
-    - name: Set git identification
+    - name: Create or clone static content branch
       run: |
-        git config --global user.name "bluekrow"
-        git config --global user.email ndioses@gmail.com
-        git config --list --show-origin
-    - name: Website deployment
-      run: hexo deploy
-      
-
+        GH_PAGES_EXISTS=$(git ls-remote --heads git@github.com:user/$repo-name.git branch-name | wc -l)
+        echo $GH_PAGES_EXISTS
