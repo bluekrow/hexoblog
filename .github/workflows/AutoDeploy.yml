@@ -8,6 +8,7 @@ jobs:
       REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       REPO_NAME: ${{ github.REPOSITORY }}
       REPO_URL: ${{ github.EVENT.REPOSITORY.CLONE_URL }}
+      REPO_OWNER: ${{ github.EVENT.REPOSITORY.OWNER.NAME }}
       REPO_BRANCH: "gh-pages"
       REPO_LOCAL_DIR: ".deploy"
     runs-on: ubuntu-18.04
@@ -35,11 +36,10 @@ jobs:
         if [ "$GH_PAGES_EXISTS" == 1 ]; then
           echo "Cloning existent $REPO_BRANCH branch"
           git clone --single-branch --branch ${REPO_BRANCH} ${REPO_URL} ${REPO_LOCAL_DIR}
-          pwd
-          ls -lha
           cd ${REPO_LOCAL_DIR}
-          pwd 
-          ls -lha
+          git remote -v
+          git remote set-url origin https://${REPO_OWNER}:${REPO_TOKEN}@github.com/${REPO_NAME}.git
+          git remote -v
         else
           echo "Initializing and pushing to a new $REPO_BRANCH branch"
         fi
