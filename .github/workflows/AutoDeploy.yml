@@ -21,7 +21,8 @@ jobs:
     - name: Set git identification
       run: |
         git config --global user.name "bluekrow"
-        git config --global user.email "ndioses@gmail.com"     
+        git config --global user.email ndioses@gmail.com
+        git config --list --show-origin
     - name: Website deployment
       run: hexo deploy
       
