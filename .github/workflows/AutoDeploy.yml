@@ -10,6 +10,7 @@ jobs:
       REPO_URL: ${{ github.EVENT.REPOSITORY.CLONE_URL }}
       REPO_OWNER_NAME: ${{ github.EVENT.REPOSITORY.OWNER.NAME }}
       REPO_OWNER_EMAIL: ${{ github.EVENT.REPOSITORY.OWNER.EMAIL }}
+      REPO_COMMIT_MESSAGE: ${{ github.EVENT.HEAD_COMMIT.MESSAGE }}
       REPO_BRANCH: "gh-pages"
       REPO_LOCAL_DIR: ".deploy"
     runs-on: ubuntu-18.04
@@ -23,19 +24,11 @@ jobs:
       env:
         JOB_CONTEXT: ${{ toJson(job) }}
       run: echo "$JOB_CONTEXT"
-    - name: Environment variables used
-      run: |
-        echo "REPO_TOKEN: $REPO_TOKEN"
-        echo "REPO_NAME: $REPO_NAME"
-        echo "REPO_BRANCH: $REPO_BRANCH"
-        echo "REPO_URL: $REPO_URL"
-        echo "REPO_LOCAL_DIR: $REPO_LOCAL_DIR"
     - name: Create or clone static content branch
       run: |
         GH_PAGES_EXISTS=$(git ls-remote --heads ${REPO_URL} ${REPO_BRANCH} | wc -l)
         echo "GH_PAGES_EXISTS: $GH_PAGES_EXISTS"
         if [ "$GH_PAGES_EXISTS" == 1 ]; then
-          cd ..
           ls -lha
           echo "Cloning existent $REPO_BRANCH branch"
           git clone --single-branch --branch ${REPO_BRANCH} ${REPO_URL} ${REPO_LOCAL_DIR}
@@ -43,12 +36,11 @@ jobs:
           git config user.email ${REPO_OWNER_EMAIL}
           git config user.name ${REPO_OWNER_NAME}
           git remote set-url origin https://${REPO_OWNER_NAME}:${REPO_TOKEN}@github.com/${REPO_NAME}.git
-          ls -lha
-          echo "one line inserted" > README.md
-          ls -lha
-          git status
+          echo "one line inserted again" > README.md
           git add .
-          git status
+          git commit -m "${REPO_COMMIT_MESSAGE}"
+          git push
         else
           echo "Initializing and pushing to a new $REPO_BRANCH branch"
+          echo "NOT IMPLEMENTED YET"
         fi
