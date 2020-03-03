@@ -51,6 +51,7 @@ jobs:
       run: rsync -r ${STATIC_CONTENT_DIR}/ ${REPO_LOCAL_DIR}
     - name: Push changes to destination branch
       run: |
+        cd ${REPO_LOCAL_DIR}
         git add .
         git commit -m "${REPO_COMMIT_MESSAGE}"
         if [ "$GH_PAGES_EXISTS" == 1 ]; then
