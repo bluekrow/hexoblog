@@ -13,7 +13,7 @@ jobs:
       REPO_COMMIT_MESSAGE: ${{ github.EVENT.HEAD_COMMIT.MESSAGE }}
       REPO_BRANCH: "gh-pagess"
       REPO_LOCAL_DIR: ".deploy"
-      GH_PAGES_EX: ${{ $(git ls-remote --heads ${REPO_URL} ${REPO_BRANCH} | wc -l) }}
+      GH_PAGES_EX: $(git ls-remote --heads ${REPO_URL} ${REPO_BRANCH} | wc -l)
     runs-on: ubuntu-18.04
     steps:
     - name: Clone source repository
