@@ -11,40 +11,54 @@ jobs:
       REPO_OWNER_NAME: ${{ github.EVENT.REPOSITORY.OWNER.NAME }}
       REPO_OWNER_EMAIL: ${{ github.EVENT.REPOSITORY.OWNER.EMAIL }}
       REPO_COMMIT_MESSAGE: ${{ github.EVENT.HEAD_COMMIT.MESSAGE }}
-      REPO_BRANCH: "gh-pagess"
+      REPO_BRANCH: "gh-pages"
       REPO_LOCAL_DIR: ".deploy"
+      STATIC_CONTENT_DIR: "public"
     runs-on: ubuntu-18.04
     steps:
     - name: Set custom enviroment variables
-      run: echo ::set-env name=GH_PAGES_EX::$(git ls-remote --heads ${REPO_URL} ${REPO_BRANCH} | wc -l)
+      run: echo ::set-env name=GH_PAGES_EXISTS::$(git ls-remote --heads ${REPO_URL} ${REPO_BRANCH} | wc -l)
     - name: Clone source repository
       uses: actions/checkout@v2
+    - name: Setup node 10.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+    - name: Install node requirements for the project
+      run: npm install
+    - name: Install hexo cli
+      run: npm install -g hexo-cli
+    - name: Generate static files
+      run: hexo generate
     - name: Configure destination branch
       run: |
-        GH_PAGES_EXISTS=$(git ls-remote --heads ${REPO_URL} ${REPO_BRANCH} | wc -l)
-        echo "GH_PAGES_EXISTS: $GH_PAGES_EXISTS"
-        echo "GH_PAGES_EX: $GH_PAGES_EX"
         if [ "$GH_PAGES_EXISTS" == 1 ]; then
           echo "Cloning existent $REPO_BRANCH branch"
           git clone --single-branch --branch ${REPO_BRANCH} ${REPO_URL} ${REPO_LOCAL_DIR}
           cd ${REPO_LOCAL_DIR}
           git remote set-url origin https://${REPO_OWNER_NAME}:${REPO_TOKEN}@github.com/${REPO_NAME}.git
-          git config user.email ${REPO_OWNER_EMAIL}
-          git config user.name ${REPO_OWNER_NAME}
-          git add .
-          git commit -m "${REPO_COMMIT_MESSAGE}"
-          git push
         else
           echo "Initializing and pushing to a new $REPO_BRANCH branch"
           mkdir ${REPO_LOCAL_DIR}
           cd ${REPO_LOCAL_DIR}
           git init
           git remote add origin https://${REPO_OWNER_NAME}:${REPO_TOKEN}@github.com/${REPO_NAME}.git
-          git config user.email ${REPO_OWNER_EMAIL}
-          git config user.name ${REPO_OWNER_NAME}
           git checkout -b ${REPO_BRANCH}
-          echo test >> README.md
-          git add .
-          git commit -m "${REPO_COMMIT_MESSAGE}"
+        fi
+        git config user.email ${REPO_OWNER_EMAIL}
+        git config user.name ${REPO_OWNER_NAME}
+    - name: Copy static content to destination branch
+      run: rsync -r ${STATIC_CONTENT_DIR}/ ${REPO_LOCAL_DIR}
+    - name: Push changes to destination branch
+      run: |
+        git add .
+        git commit -m "${REPO_COMMIT_MESSAGE}"
+        if [ "$GH_PAGES_EXISTS" == 1 ]; then
+          git push
+        else
           git push -u origin ${REPO_BRANCH}
         fi
+
+
+  
+
