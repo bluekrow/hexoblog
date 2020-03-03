@@ -1,67 +1,83 @@
 name: Auto Deploy
 
-on: [push]
-
+on: 
+  push:
+    branches:
+    - master
+    paths-ignore:
+    - .gitignore
+    - README.md
+    
 jobs:
   build:
+    
     env:
-      REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      REPO_NAME: ${{ github.REPOSITORY }}
+      AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPO_OWNER_AND_NAME: ${{ github.REPOSITORY }}
       REPO_URL: ${{ github.EVENT.REPOSITORY.CLONE_URL }}
-      REPO_OWNER_NAME: ${{ github.EVENT.REPOSITORY.OWNER.NAME }}
-      REPO_OWNER_EMAIL: ${{ github.EVENT.REPOSITORY.OWNER.EMAIL }}
-      REPO_COMMIT_MESSAGE: ${{ github.EVENT.HEAD_COMMIT.MESSAGE }}
-      REPO_BRANCH: "gh-pages"
-      REPO_LOCAL_DIR: ".deploy"
-      STATIC_CONTENT_DIR: "public"
+      OWNER_NAME: ${{ github.EVENT.REPOSITORY.OWNER.NAME }}
+      OWNER_EMAIL: ${{ github.EVENT.REPOSITORY.OWNER.EMAIL }}
+      COMMIT_MESSAGE: ${{ github.EVENT.HEAD_COMMIT.MESSAGE }}
+      DEPLOY_BRANCH: "gh-pages"
+      DEPLOY_DIR: ".deploy"
+      SOURCE_DIR: "public"
     runs-on: ubuntu-18.04
+    
     steps:
+    
     - name: Set custom enviroment variables
-      run: echo ::set-env name=GH_PAGES_EXISTS::$(git ls-remote --heads ${REPO_URL} ${REPO_BRANCH} | wc -l)
+      run: |
+        echo ::set-env name=GH_PAGES_EXISTS::$(git ls-remote --heads ${REPO_URL} ${DEPLOY_BRANCH} | wc -l)
+        echo ::set-env name=REPO_URL_AUTH::https://${OWNER_NAME}:${AUTH_TOKEN}@github.com/${REPO_OWNER_AND_NAME}.git
+
     - name: Clone source repository
       uses: actions/checkout@v2
+
     - name: Setup node 10.x
       uses: actions/setup-node@v1
       with:
         node-version: '10.x'
-    - name: Install node requirements for the project
-      run: npm install
-    - name: Install hexo cli
-      run: npm install -g hexo-cli
+
+    - name: Install hexo cli and node dependencies
+      run: |
+        npm install
+        npm install -g hexo-cli
+
     - name: Clean old files
-      run: hexo clean
+
     - name: Generate static files
-      run: hexo generate
+      run: |
+        hexo clean
+        hexo generate
+
     - name: Configure destination branch
       run: |
         if [ "$GH_PAGES_EXISTS" == 1 ]; then
-          echo "Cloning existent $REPO_BRANCH branch"
-          git clone --single-branch --branch ${REPO_BRANCH} ${REPO_URL} ${REPO_LOCAL_DIR}
-          cd ${REPO_LOCAL_DIR}
-          git remote set-url origin https://${REPO_OWNER_NAME}:${REPO_TOKEN}@github.com/${REPO_NAME}.git
+          echo "Clone existent $DEPLOY_BRANCH branch"
+          git clone --single-branch --branch ${DEPLOY_BRANCH} ${REPO_URL} ${DEPLOY_DIR}
+          cd ${DEPLOY_DIR}
+          git remote set-url origin ${REPO_URL_AUTH}
         else
-          echo "Initializing and pushing to a new $REPO_BRANCH branch"
-          mkdir ${REPO_LOCAL_DIR}
-          cd ${REPO_LOCAL_DIR}
+          echo "Initialize and push to a new $DEPLOY_BRANCH branch"
+          mkdir ${DEPLOY_DIR}
+          cd ${DEPLOY_DIR}
           git init
-          git remote add origin https://${REPO_OWNER_NAME}:${REPO_TOKEN}@github.com/${REPO_NAME}.git
-          git checkout -b ${REPO_BRANCH}
+          git remote add origin ${REPO_URL_AUTH}
+          git checkout -b ${DEPLOY_BRANCH}
         fi
-        git config user.email ${REPO_OWNER_EMAIL}
-        git config user.name ${REPO_OWNER_NAME}
+        git config user.email ${OWNER_EMAIL}
+        git config user.name ${OWNER_NAME}
+
     - name: Copy static content to destination branch
-      run: rsync -r ${STATIC_CONTENT_DIR}/ ${REPO_LOCAL_DIR}
+      run: rsync -r ${SOURCE_DIR}/ ${DEPLOY_DIR}
+
     - name: Push changes to destination branch
       run: |
-        cd ${REPO_LOCAL_DIR}
+        cd ${DEPLOY_DIR}
         git add .
-        git commit -m "${REPO_COMMIT_MESSAGE}"
+        git commit -m "${COMMIT_MESSAGE}"
         if [ "$GH_PAGES_EXISTS" == 1 ]; then
           git push
         else
-          git push -u origin ${REPO_BRANCH}
+          git push -u origin ${DEPLOY_BRANCH}
         fi
-
-
-  
-
