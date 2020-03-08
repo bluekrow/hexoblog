@@ -17,7 +17,10 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
+    - name: Clone source repository
+      uses: actions/checkout@v2      
+
     - name: Hexo Auto Deploy
-      uses: bluekrow/hexo-auto-deploy@v1.0.1
+      uses: bluekrow/hexo-auto-deploy@v1.0.2
       with:
         token: ${AUTH_TOKEN}
