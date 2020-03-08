@@ -1,0 +1,21 @@
+name: Hexo Auto Deploy
+
+on: 
+  push:
+    branches:
+    - master
+    paths-ignore:
+    - .gitignore
+    - README.md
+    
+jobs:
+  build:
+    
+    env:
+        AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+    steps:
+    - name: Hexo Auto Deploy
+      uses: bluekrow/hexo-auto-deploy@v1.0
+      with:
+        token: ${AUTH_TOKEN}
