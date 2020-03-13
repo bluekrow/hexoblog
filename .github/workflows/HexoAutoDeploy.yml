@@ -19,6 +19,6 @@ jobs:
       uses: actions/checkout@v2      
 
     - name: Hexo Auto Deploy
-      uses: bluekrow/hexo-auto-deploy@v1.0.4
+      uses: bluekrow/hexo-auto-deploy@v1.1.0
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
